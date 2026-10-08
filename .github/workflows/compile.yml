@@ -1,0 +1,27 @@
+name: Compilar SA-MP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar compilador Pawn
+        run: |
+          git clone https://github.com/pawn-lang/compiler.git pawn-compiler
+
+      - name: Compilar gamemode
+        run: |
+          mkdir -p output
+          ./pawn-compiler/pawncc gamemodes/racing.pwn -o output/racing.amx
+
+      - name: Disponibilizar racing.amx
+        uses: actions/upload-artifact@v4
+        with:
+          name: racing-amx
+          path: output/racing.amx
