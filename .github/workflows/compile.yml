@@ -11,14 +11,19 @@ jobs:
       - name: Baixar projeto
         uses: actions/checkout@v4
 
-      - name: Instalar compilador Pawn
+      - name: Baixar compilador Pawn
         run: |
-          git clone https://github.com/pawn-lang/compiler.git pawn-compiler
+          git clone --depth 1 https://github.com/openmultiplayer/compiler.git compiler
 
-      - name: Compilar gamemode
+      - name: Compilar racing.pwn
         run: |
           mkdir -p output
-          ./pawn-compiler/pawncc gamemodes/racing.pwn -o output/racing.amx
+          mkdir -p compiler/build
+          cd compiler/build
+          cmake ../source/compiler
+          cmake --build . --config Release
+          cd ../..
+          ./compiler/build/pawncc -i compiler/include gamemodes/racing.pwn -o output/racing.amx
 
       - name: Disponibilizar racing.amx
         uses: actions/upload-artifact@v4
